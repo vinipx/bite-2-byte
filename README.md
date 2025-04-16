@@ -29,7 +29,13 @@
 
 ## Installation
 
-To get started with Bite-2-Byte, follow these steps:
+The `bite.sh` script now includes OS detection to ensure compatibility across different systems:
+
+- **macOS**: The script uses `pip` to install required Python packages from `requirements.txt`.
+- **Windows**: It checks for `pip` availability. If `pip` is not found, it provides instructions for installing Python or using Chocolatey as an alternative package manager.
+- **Other OS**: For unsupported systems, the script will prompt you to install dependencies manually.
+
+To run the installation, simply execute `./bite.sh` in your terminal. The script will handle the rest based on your operating system.
 
 1. **Clone the Repository** (or download the zip file):
    ```bash
