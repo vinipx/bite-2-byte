@@ -1,0 +1,15 @@
+# Virtual Environment
+.venv/
+.venv
+
+# Training Data Files
+training_data_json/
+training_data*.json
+training_data*.csv
+training_data*.txt
+
+# IDE files
+.idea/
+
+# macOS system files
+.DS_Store
