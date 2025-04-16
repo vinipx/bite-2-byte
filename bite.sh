@@ -37,36 +37,27 @@ if ! command -v python &> /dev/null; then
     exit 1
 fi
 
-# Check if pip is installed
-if ! command -v pip &> /dev/null; then
-    print_error "pip is not installed. Please install pip to manage Python packages."
+# Detect OS
+OS_TYPE=$(uname -s)
+if [[ "$OS_TYPE" == "Darwin" ]]; then
+    echo "macOS detected. Using pip for installation."
+    # macOS installation using pip
+    pip install -r requirements.txt
+elif [[ "$OS_TYPE" == "MINGW"* ]] || [[ "$OS_TYPE" == "MSYS"* ]] || [[ "$OS_TYPE" == "CYGWIN"* ]]; then
+    echo "Windows detected. Checking for pip..."
+    if command -v pip &> /dev/null; then
+        echo "pip found. Using pip for installation."
+        pip install -r requirements.txt
+    else
+        echo "pip not found. Please install Python and pip, or use an alternative method like Chocolatey."
+        echo "Visit https://chocolatey.org/install for Chocolatey installation instructions."
+        echo "After installing Chocolatey, you can run: choco install python"
+        exit 1
+    fi
+else
+    echo "Unsupported OS detected. Please install dependencies manually."
     exit 1
 fi
-
-# Check for required Python libraries
-print_warning "Checking for required Python libraries..."
-required_libs=("requests" "beautifulsoup4")
-missing_libs=()
-for lib in "${required_libs[@]}"; do
-    if ! pip show "$lib" &> /dev/null; then
-        missing_libs+=("$lib")
-    fi
-done
-
-if [ ${#missing_libs[@]} -ne 0 ]; then
-    print_error "Missing required libraries: ${missing_libs[*]}"
-    print_warning "Attempting to install missing libraries..."
-    for lib in "${missing_libs[@]}"; do
-        pip install "$lib"
-        if [ $? -eq 0 ]; then
-            print_success "Installed $lib successfully."
-        else
-            print_error "Failed to install $lib. Please install it manually."
-            exit 1
-        fi
-    done
-fi
-print_success "All required libraries are installed."
 
 # Check if the main.py file exists
 if [ ! -f "main.py" ]; then
