@@ -4,9 +4,13 @@
 
 # Training Data Files
 training_data_json/
-training_data*.json
+training_data.jsonl
 training_data*.csv
 training_data*.txt
+*.jsonl
+*.json
+*.csv
+*.txt
 
 # IDE files
 .idea/
