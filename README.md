@@ -12,6 +12,7 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Advanced Options](#advanced-options)
 - [Data Validation](#data-validation)
 - [Output Formats](#output-formats)
 - [Contributing](#contributing)
@@ -22,9 +23,13 @@
 
 - **User-Friendly Interface**: Interactive CLI for easy operation.
 - **Web Crawling**: Automatically navigates through website links starting from a base URL.
+- **Pagination Handling**: Intelligently discovers and navigates through paginated content.
 - **Q&A Extraction**: Identifies and extracts question-answer pairs from web content.
+- **Discussion Extraction**: Captures forum discussions and converts them to Q&A format.
+- **Data Deduplication**: Automatically removes duplicate content to improve data quality.
 - **Data Formatting**: Supports multiple output formats (JSONL, CSV, TXT) for AI training compatibility.
 - **Validation**: Analyzes extracted data to ensure suitability for LLM training.
+- **Progress Tracking**: Provides real-time updates and saves intermediate results during processing.
 - **Dependency Management**: Automatically checks and installs required Python libraries.
 
 ## Installation
@@ -68,7 +73,27 @@ Bite-2-Byte offers two ways to run the application:
 - Run the app using `./bite.sh`.
 - Enter a base URL (e.g., `https://example.com`).
 - Choose a data format (JSONL, CSV, or TXT).
-- The app will crawl the site, extract Q&A data, validate it, and save the results.
+- The app will discover pages, crawl the site, extract Q&A and discussion data, validate it, and save the results.
+
+## Advanced Options
+
+Bite-2-Byte now supports additional command-line options for more control:
+
+```bash
+python main.py --url https://example.com --format jsonl --max-pages 100
+```
+
+- **--url**: The base URL to start crawling from.
+- **--format**: Output format (jsonl, csv, or txt).
+- **--max-pages**: Maximum number of pages to crawl (optional). If not specified, the tool will auto-detect and process all available pages.
+
+### Handling Large Websites
+
+For large websites with many pages, the tool now:
+1. First discovers all available pages to determine the total count
+2. Shows progress as it crawls through the pages
+3. Saves intermediate results periodically to prevent data loss if the process is interrupted
+4. Automatically handles pagination to navigate through all content pages
 
 ## Data Validation
 
@@ -80,10 +105,22 @@ Bite-2-Byte includes a validation step to ensure the extracted data is suitable 
 
 ## Output Formats
 
-The extracted Q&A data will be saved in the specified format as `training_data.[format]`:
-- **JSONL** (default): Each line is a JSON object with `question`, `answer`, and `source` fields.
-- **CSV**: Structured table with columns for `question`, `answer`, and `source`.
-- **TXT**: Human-readable format with Q&A pairs separated by new lines.
+The extracted data is now saved in separate files for different content types:
+
+### Q&A Data
+- **data_qa.jsonl**: Each line is a JSON object with `question`, `answer`, and `source` fields.
+- **data_qa.csv**: Structured table with columns for question, answer, and source.
+- **data_qa.txt**: Human-readable format with Q&A pairs separated by new lines.
+
+### Discussion Data
+- **data_discussion.jsonl**: Each line is a JSON object with `title`, `content`, and `source` fields.
+- **data_discussion.csv**: Structured table with columns for title, content, and source.
+- **data_discussion.txt**: Human-readable format with discussion content.
+
+### Intermediate Files
+During processing, the tool saves intermediate results to prevent data loss:
+- **data_qa_intermediate.jsonl**: Periodically saved Q&A data.
+- **data_discussion_intermediate.jsonl**: Periodically saved discussion data.
 
 ## Contributing
 
